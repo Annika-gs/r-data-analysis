@@ -119,5 +119,102 @@ surveys %>%
 surveys %>%
     filter(!is.na(weight)) %>% 
     group_by(year) %>% 
-    summarise(max_weight = max(weight)) %>% 
+    filter(weight == max(weight)) %>% 
+    select(year, genus, species_id, weight) %>% 
+    arrange(desc(weight))
+
+surveys_complete <- 
+    surveys %>% 
+    filter(!is.na(weight), 
+           !is.na(hindfoot_length), 
+           !is.na(sex))
+
+#Keep species for which there are at least 50 observations
+species_counts <- surveys_complete %>% 
+    count(species_id) %>% 
+    filter(n>=50)
+
+num_species <- surveys_complete %>% 
+    count(species_id) %>% 
+    filter(n >= 1000)
+
+surveys_complete %>% 
+    filter(species_id %in% num_species$species_id)
+
+animals <- c("pig", "cat", "dog", "donkey", "gorilla", "mouse")
+
+other_animals <- c("zebra", "parrot", "donkey", "cat", "camel")
+
+animals <- c(animals, "zebra", "parrot", "camel")
+
+animals
+
+animals %in% other_animals
+
+animals %in% other_animals$animals
+
+other_animals
+
+intersect(animals, other_animals)
+#reduce the surveys_complete object so that it only contains species with at least 50 observations (these 
+# are in object species_count)
+
+numerous_species <-  species_counts$species_id
+
+surveys_complete <- 
+    surveys_complete %>% 
+    filter(species_id %in% numerous_species)
+
+dim(surveys_complete)
+
+write_csv(surveys_complete, "data/surveys_complete.csv")
+
+# how to plot with ggplot2
+
+surveys_plot <- ggplot(data = surveys_complete, mapping = aes(x = weight, y = hindfoot_length)) +
+    geom_jitter()
+
+library(tidyverse)
+
+dim(surveys_complete)    
+
+ggplot(data = surveys_complete, mapping = aes(x = weight, y = hindfoot_length)) + geom_point(alpha = 0.1, aes(colour = species_id))
+
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = hindfoot_length)) + 
+    geom_boxplot() +
+    geom_point(alpha = 0.1, colour = "tomato")
+
+yearly_counts <- 
+    surveys_complete %>% 
+    group_by(year, species_id) %>% 
+    tally()
+
+surveys_complete %>% 
+    group_by(year, species) %>% 
+    tally()
+
+ggplot(data = yearly_counts, mapping = aes(x = year, y = n)) + 
+    geom_line()
+
+ggplot(data = yearly_counts, mapping = aes(x = year, y = n, colour = species_id)) +
+    geom_line()
+
+# faceting - splitting graphs of the same scale into loads of seperate graphs
+ggplot(data = yearly_counts, mapping = aes(x = year, y = n, colour = species_id)) +
+    geom_line() +
+    facet_wrap(~species_id) # ~tells facet_wrap that to use to split the graphs
+
+yearly_sex_counts <- surveys_complete %>% 
+    group_by(year, species_id, sex) %>% 
+    tally()
+
+ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, colour = sex)) +
+    geom_line() +
+    facet_wrap(~species_id) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1.1)) +
+    labs(title = "Species counts over time",
+         x = "Year of observation",
+         y = "Number of species")
+
+ggsave("images/my_fancy_plot.png", width = 15, height = 10, dpi = 300)
 
