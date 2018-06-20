@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1529413432884.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "64CE6ED8",
+    "lastKnownWriteTime" : 1529420990,
+    "last_content_update" : 1529491513917,
+    "path" : "~/Desktop/R/4_data_analysis_dplyr.R",
+    "project_path" : "4_data_analysis_dplyr.R",
+    "properties" : {
+        "cursorPosition" : "219,0",
+        "scrollLine" : "200",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
